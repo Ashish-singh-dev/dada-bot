@@ -1,14 +1,22 @@
-import "./bot";
-import express from "express";
+import { config } from "dotenv";
+import express, { json, urlencoded } from "express";
+import errorHandler from "./middleware/errorMiddleware";
+// import "./bot";
 
+// load env variables
+config();
+const PORT = process.env.PORT || 8080;
 const app = express();
 
-const port = process.env.PORT || 8080;
+app.use(json());
+app.use(urlencoded({ extended: false }));
 
-app.get("/", (_req, res) => {
-  res.send("Bot is running.");
-});
+// routes
+app.use("/api/users", require("./routes/userRoute"));
 
-app.listen(port, () => {
-  console.log("server started");
+// error handler
+app.use(errorHandler);
+// start server
+app.listen(PORT, () => {
+  console.log(`server started at ${PORT}`);
 });
