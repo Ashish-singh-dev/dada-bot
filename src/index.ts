@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import express, { json, urlencoded } from "express";
 import errorHandler from "./middleware/errorMiddleware";
-// import "./bot";
+import "./bot";
 
 // load env variables
 config();
@@ -13,6 +13,11 @@ app.use(urlencoded({ extended: false }));
 
 // routes
 app.use("/api/users", require("./routes/userRoute"));
+app.get("/", (_req, res) => {
+  res.status(200).json({
+    message: "server running.",
+  });
+});
 
 // error handler
 app.use(errorHandler);
