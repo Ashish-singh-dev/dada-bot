@@ -1,15 +1,9 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
-
-const random_replies = [
-  "Hello Motherfukcer",
-  "Hey it's dada here",
-  "LOL",
-  "Shutup mc don't mess with dada",
-];
+import { replies } from "../utils/greetingReplies";
 
 function getReply() {
-  return random_replies[Math.floor(Math.random() * random_replies.length)];
+  return replies[Math.floor(Math.random() * replies.length)];
 }
 
 export const data = new SlashCommandBuilder()
