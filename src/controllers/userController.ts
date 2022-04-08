@@ -99,6 +99,15 @@ const deleteMe = expressAsyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("No user found");
   }
+
+  // @ts-ignore
+  if (req.user && req.user?.isAdmin) {
+    res.status(401);
+    throw new Error(
+      "Your are not authorized to delete this account do it manually"
+    );
+  }
+
   // @ts-ignore
   await deleteDoc(doc(db, "users", req.user.id));
   res.status(200).json({
@@ -108,7 +117,9 @@ const deleteMe = expressAsyncHandler(async (req, res) => {
 });
 
 function generateToken(id: string) {
-  return sign({ id }, process.env.JWT_SECRET as Secret);
+  return sign({ id }, process.env.JWT_SECRET as Secret, {
+    expiresIn: "30d",
+  });
 }
 
 async function findOneUser(userEmail: string) {

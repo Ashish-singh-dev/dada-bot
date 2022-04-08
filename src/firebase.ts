@@ -1,5 +1,12 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore/lite";
+import {
+  getFirestore,
+  addDoc,
+  collection,
+  serverTimestamp,
+} from "firebase/firestore/lite";
+
+type errorCallback = (message: string) => void;
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -14,4 +21,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-export { db };
+async function createTicket(
+  threadId: string,
+  text: string,
+  errorCallback: errorCallback
+) {
+  try {
+    await addDoc(collection(db, "tickets"), {
+      threadId,
+      text,
+      openedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    errorCallback("Failed to create ticket on server, manual help required");
+  }
+}
+
+export { db, createTicket, errorCallback };
