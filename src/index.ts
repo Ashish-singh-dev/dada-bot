@@ -18,7 +18,7 @@ const whitelist = ["https://dada-bot.vercel.app", "http://localhost:3000"];
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (whitelist.indexOf(origin!) !== -1) {
+      if (whitelist.indexOf(origin!) !== -1 || !origin) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by cors"));
