@@ -2,6 +2,7 @@ import { config } from "dotenv";
 import express, { json, urlencoded } from "express";
 import errorHandler from "./middleware/errorMiddleware";
 import { client } from "./bot";
+import cors from "cors";
 
 // load env variables
 config();
@@ -13,6 +14,19 @@ client.once("ready", () => {
 const PORT = process.env.PORT || 8080;
 const app = express();
 
+const whitelist = ["https://dada-bot.vercel.app", "http://127.0.0.1:3000"];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (whitelist.indexOf(origin!) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by cors"));
+      }
+    },
+    methods: "GET,POST,PUT,DELETE",
+  })
+);
 app.use(json());
 app.use(urlencoded({ extended: false }));
 
