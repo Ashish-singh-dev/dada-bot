@@ -7,6 +7,7 @@ import {
   getDocs,
   limit,
   query,
+  serverTimestamp,
   setDoc,
   updateDoc,
   where,
@@ -120,6 +121,7 @@ const resolveThread = expressAsyncHandler(
           doc(db, "tickets", foundThread.id),
           {
             archived: true,
+            closedAt: serverTimestamp(),
           },
           { merge: true }
         ).catch(() => {});
@@ -132,4 +134,25 @@ const resolveThread = expressAsyncHandler(
   }
 );
 
-export { getMessages, sendMessages, resolveThread };
+// @desc    Get all thread tickets
+// @route   GET api/thread/tickets
+// @access  Private
+const getThreadTickets = expressAsyncHandler(async (req, res) => {
+  // @ts-ignore
+  if (!req.user || !req.user.isAdmin) {
+    res.status(401);
+    throw new Error("Not authorized");
+  }
+
+  const data = await getDocs(collection(db, "tickets"));
+  const tickets = data.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  res.status(200).json({
+    tickets: tickets || [],
+  });
+});
+
+export { getMessages, sendMessages, resolveThread, getThreadTickets };
