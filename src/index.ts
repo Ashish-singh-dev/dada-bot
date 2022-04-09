@@ -14,7 +14,7 @@ client.once("ready", () => {
 const PORT = process.env.PORT || 8080;
 const app = express();
 
-const whitelist = ["https://dada-bot.vercel.app", "http://127.0.0.1:3000"];
+const whitelist = ["https://dada-bot.vercel.app", "http://localhost:3000"];
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -24,7 +24,6 @@ app.use(
         callback(new Error("Not allowed by cors"));
       }
     },
-    methods: "GET,POST,PUT,DELETE",
   })
 );
 app.use(json());
